@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'features/users/data/ds/users_remote_ds.dart';
 import 'features/users/data/repo/users_repo_impl.dart';
+import 'features/users/domain/use_case/get_bookmarked_ids_use_case.dart';
+import 'features/users/domain/use_case/toggle_bookmark_use_case.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,4 +36,6 @@ Future<void> setupDependencies() async {
 
   getIt.registerLazySingleton(() => GetUsersUseCase(getIt()));
   getIt.registerLazySingleton(() => GetReputationUseCase(getIt()));
+  getIt.registerLazySingleton(() => ToggleBookmarkUseCase(getIt()));
+  getIt.registerLazySingleton(() => GetBookmarkedIdsUseCase(getIt()));
 }

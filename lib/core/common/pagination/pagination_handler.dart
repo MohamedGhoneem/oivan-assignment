@@ -1,60 +1,3 @@
-// import 'package:app_fundamentals/app_fundamentals.dart';
-// import 'package:flutter/material.dart';
-//
-//
-// class PaginationHandler {
-//   BehaviorSubject<RequestState> requestStateSubject;
-//   VoidCallback voidCallback;
-//
-//   PaginationHandler({
-//     required this.requestStateSubject,
-//     required this.voidCallback,
-//   });
-//
-//   /// Pagination
-//   ScrollController controller = ScrollController();
-//   bool hasMore = true;
-//   int page = 1;
-//   int size = 30;
-//
-//   void reset() {
-//     requestStateSubject.sink
-//         .add(RequestState(status: RequestStatus.loading, message: ''));
-//     hasMore = true;
-//     page = 1;
-//     size = 30;
-//   }
-//
-//   void _scrollListener() {
-//     if (controller.position.pixels >=
-//         controller.position.maxScrollExtent - 200)  {
-//       if (hasMore) {
-//         requestStateSubject.sink.add(
-//           RequestState(
-//             status: RequestStatus.loadMore,
-//             message: RequestStatus.loadMore.name,),
-//         );
-//         page++;
-//         callPaginatedRequest();
-//       }
-//     }
-//   }
-//
-//   Future<void> callPaginatedRequest() async {
-//     debugPrint('page : $page  / hasMore : $hasMore');
-//     controller.addListener(_scrollListener);
-//     if (hasMore ||
-//         requestStateSubject.value.status == RequestStatus.loadMore) {
-//       voidCallback();
-//     }
-//   }
-//
-//   dispose(){
-//     requestStateSubject.close();
-//     controller.dispose();
-//   }
-// }
-
 import 'dart:async';
 import 'package:app_fundamentals/app_fundamentals.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +18,9 @@ class PaginationHandler {
   }
 
   /// Pagination
-  final ScrollController controller = ScrollController();
+  final ScrollController controller = ScrollController(
+    keepScrollOffset: true,
+  );
   bool hasMore = true;
   int page = 1;
   int size = 30;
@@ -105,10 +50,11 @@ class PaginationHandler {
       final currentScroll = controller.position.pixels;
       final remainingScroll = maxScroll - currentScroll;
 
-      if (remainingScroll <= _scrollThreshold &&
+      if (
+      remainingScroll <= _scrollThreshold &&
           !_isLoadingMore &&
           hasMore &&
-          requestStateSubject.value.status == RequestStatus.loadMore) {
+          requestStateSubject.value.status != RequestStatus.loadMore) {
 
         _loadMore();
       }

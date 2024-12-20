@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:oivan_assignment/features/users/presentation/view/reputation/reputation_page.dart';
 
 import '../../../../domain/entity/user_entity.dart';
+import '../../../bloc/users_bloc.dart';
 
 class UserListItem extends StatelessWidget {
   final UserEntity user;
-
-  const UserListItem({super.key, required this.user});
+final UsersBloc bloc;
+  const UserListItem({super.key, required this.user, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class UserListItem extends StatelessWidget {
             color: user.isBookmarked ? Colors.blue : null,
           ),
           onPressed: () {
-            // Implement bookmark toggle logic
+            bloc.toggleUserBookmark(user);
           },
         ),
       ),

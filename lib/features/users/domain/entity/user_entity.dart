@@ -16,4 +16,23 @@ class UserEntity {
     required this.age,
     this.isBookmarked = false,
   });
+  UserEntity copyWith({
+    int? userId,
+    String? displayName,
+    String? profileImage,
+    int? reputation,
+    String? location,
+    int? age,
+    bool? isBookmarked,
+  }) {
+    return UserEntity(
+      userId: userId ?? this.userId,
+      displayName: displayName ?? this.displayName,
+      profileImage: profileImage ?? this.profileImage,
+      reputation: reputation ?? this.reputation,
+      location: location ?? this.location,
+      age: age ?? this.age,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
+    );
+  }
 }

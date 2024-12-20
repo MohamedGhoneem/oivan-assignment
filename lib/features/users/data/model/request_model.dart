@@ -13,4 +13,14 @@ class RequestModel extends RequestEntity {
     'pageSize': paginationRequestEntity?.pageSize,
 
   };
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is RequestModel &&
+              runtimeType == other.runtimeType &&
+              paginationRequestEntity == other.paginationRequestEntity &&
+              site == other.site;
+
+  @override
+  int get hashCode => Object.hash(paginationRequestEntity, site);
 }

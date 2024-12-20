@@ -18,7 +18,7 @@ class _UsersPageMobileState extends BaseState<UsersPageMobile> {
   @override
   void initState() {
     super.initState();
-    _usersBloc = UsersBloc(getIt());
+    _usersBloc = UsersBloc(getIt(), getIt(), getIt());
     _usersBloc.fetchUsers();
   }
 
@@ -29,12 +29,18 @@ class _UsersPageMobileState extends BaseState<UsersPageMobile> {
       builder: (context, snapshot) {
         return StreamingResult(
           subject: _usersBloc.requestStateSubject,
-          successWidget: ListView.builder(
-            controller: _usersBloc.paginationHandler.controller,
-            itemCount: _usersBloc.filteredUsers.length,
-            itemBuilder: (context, index) {
-              return UserListItem(user: _usersBloc.filteredUsers[index]);
-            },
+          successWidget: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              physics:
+                  const ClampingScrollPhysics(), // This helps maintain position
+            ),
+            child: ListView.builder(
+              controller: _usersBloc.paginationHandler.controller,
+              itemCount: _usersBloc.filteredUsers.length,
+              itemBuilder: (context, index) {
+                return UserListItem(user: _usersBloc.filteredUsers[index], bloc: _usersBloc,);
+              },
+            ),
           ),
           emptyWidget: Center(
             child: Column(
@@ -65,9 +71,7 @@ class _UsersPageMobileState extends BaseState<UsersPageMobile> {
           builder: (context, snapshot) {
             return IconButton(
               icon: Icon(
-                snapshot.data == true
-                    ? Icons.bookmark
-                    : Icons.bookmark_border,
+                snapshot.data == true ? Icons.bookmark : Icons.bookmark_border,
               ),
               onPressed: _usersBloc.toggleBookmarkFilter,
               tooltip: 'Show Bookmarked Only',

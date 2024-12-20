@@ -31,11 +31,12 @@ class UsersRemoteDataSource {
     }
   }
 
-  Future<GetReputationModel> getUserReputation(RequestModel params, int userId) async {
+  Future<GetReputationModel> getUserReputation(
+      RequestModel params, int userId) async {
     try {
       final response = await _networkClient.request(
         HttpMethod.get,
-        endpoint: '$usersEndPoint/139985$reputationsEndPoint',
+        endpoint: '$usersEndPoint/$userId$reputationsEndPoint',
         queryParameters: params.toJson(),
       );
       log('getUserReputation response : $response');

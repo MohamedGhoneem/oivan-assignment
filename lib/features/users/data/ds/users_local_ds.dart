@@ -1,7 +1,53 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../model/user_model.dart';
-
+// import 'dart:convert';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import '../model/user_model.dart';
+//
+// // class UsersLocalDataSource {
+// //   final SharedPreferences _prefs;
+// //   static const String _bookmarkedUsersKey = 'bookmarked_users';
+// //
+// //   UsersLocalDataSource(this._prefs);
+// //
+// //   Future<List<int>> getBookmarkedUserIds() async {
+// //     final jsonString = _prefs.getString(_bookmarkedUsersKey);
+// //     if (jsonString == null) return [];
+// //
+// //     final List<dynamic> jsonList = json.decode(jsonString);
+// //     return jsonList.map((id) => id as int).toList();
+// //   }
+// //
+// //   Future<List<UserModel>> getBookmarkedUsers() async {
+// //     final jsonString = _prefs.getString(_bookmarkedUsersKey);
+// //     if (jsonString == null) return [];
+// //
+// //     final List<dynamic> jsonList = json.decode(jsonString);
+// //     return jsonList.map((json) => UserModel.fromJson(json)).toList();
+// //   }
+// //
+// //   Future<void> toggleBookmark(UserModel user) async {
+// //     final bookmarkedUsers = await getBookmarkedUsers();
+// //     final userIndex =
+// //         bookmarkedUsers.indexWhere((u) => u.userId == user.userId);
+// //
+// //     if (userIndex >= 0) {
+// //       bookmarkedUsers.removeAt(userIndex);
+// //     } else {
+// //       bookmarkedUsers.add(user);
+// //     }
+// //
+// //     await _saveBookmarkedUsers(bookmarkedUsers);
+// //   }
+// //
+// //   Future<void> _saveBookmarkedUsers(List<UserModel> users) async {
+// //     final jsonString = json.encode(users.map((user) => user.toJson()).toList());
+// //     await _prefs.setString(_bookmarkedUsersKey, jsonString);
+// //   }
+// //
+// //   Future<void> clearBookmarks() async {
+// //     await _prefs.remove(_bookmarkedUsersKey);
+// //   }
+// // }
+//
 // class UsersLocalDataSource {
 //   final SharedPreferences _prefs;
 //   static const String _bookmarkedUsersKey = 'bookmarked_users';
@@ -27,7 +73,7 @@ import '../model/user_model.dart';
 //   Future<void> toggleBookmark(UserModel user) async {
 //     final bookmarkedUsers = await getBookmarkedUsers();
 //     final userIndex =
-//         bookmarkedUsers.indexWhere((u) => u.userId == user.userId);
+//     bookmarkedUsers.indexWhere((u) => u.userId == user.userId);
 //
 //     if (userIndex >= 0) {
 //       bookmarkedUsers.removeAt(userIndex);
@@ -48,6 +94,13 @@ import '../model/user_model.dart';
 //   }
 // }
 
+
+
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../model/user_model.dart';
+import '../../domain/entity/user_entity.dart';
+
 class UsersLocalDataSource {
   final SharedPreferences _prefs;
   static const String _bookmarkedUsersKey = 'bookmarked_users';
@@ -59,21 +112,22 @@ class UsersLocalDataSource {
     if (jsonString == null) return [];
 
     final List<dynamic> jsonList = json.decode(jsonString);
-    return jsonList.map((id) => id as int).toList();
+    return jsonList.map((json) => UserModel.fromJson(json).userId).toList();
   }
 
-  Future<List<UserModel>> getBookmarkedUsers() async {
+  Future<List<UserEntity>> getBookmarkedUsers() async {
     final jsonString = _prefs.getString(_bookmarkedUsersKey);
     if (jsonString == null) return [];
 
     final List<dynamic> jsonList = json.decode(jsonString);
-    return jsonList.map((json) => UserModel.fromJson(json)).toList();
+    return jsonList
+        .map((json) => UserModel.fromJson(json).toEntity())
+        .toList();
   }
 
-  Future<void> toggleBookmark(UserModel user) async {
+  Future<void> toggleBookmark(UserEntity user) async {
     final bookmarkedUsers = await getBookmarkedUsers();
-    final userIndex =
-    bookmarkedUsers.indexWhere((u) => u.userId == user.userId);
+    final userIndex = bookmarkedUsers.indexWhere((u) => u.userId == user.userId);
 
     if (userIndex >= 0) {
       bookmarkedUsers.removeAt(userIndex);
@@ -84,8 +138,11 @@ class UsersLocalDataSource {
     await _saveBookmarkedUsers(bookmarkedUsers);
   }
 
-  Future<void> _saveBookmarkedUsers(List<UserModel> users) async {
-    final jsonString = json.encode(users.map((user) => user.toJson()).toList());
+  Future<void> _saveBookmarkedUsers(List<UserEntity> users) async {
+    final jsonList = users
+        .map((user) => UserModel.fromEntity(user).toJson())
+        .toList();
+    final jsonString = json.encode(jsonList);
     await _prefs.setString(_bookmarkedUsersKey, jsonString);
   }
 

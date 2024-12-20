@@ -25,6 +25,7 @@ class _ReputationScreenState extends BaseState<ReputationPageMobile> {
   void initState() {
     super.initState();
     _reputationBloc = ReputationBloc(getIt());
+    _reputationBloc.userId = widget.user.userId;
     _reputationBloc.fetchUsers();
   }
 
@@ -73,13 +74,18 @@ class _ReputationScreenState extends BaseState<ReputationPageMobile> {
             builder: (context, snapshot) {
               return StreamingResult(
                 subject: _reputationBloc.requestStateSubject,
-                successWidget: ListView.builder(
-                  controller: _reputationBloc.paginationHandler.controller,
-                  itemCount: _reputationBloc.allReputation.length,
-                  itemBuilder: (context, index) {
-                    return ReputationListItem(
-                        reputation: _reputationBloc.allReputation[index]);
-                  },
+                successWidget: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    physics: const ClampingScrollPhysics(), // This helps maintain position
+                  ),
+                  child: ListView.builder(
+                    controller: _reputationBloc.paginationHandler.controller,
+                    itemCount: _reputationBloc.allReputation.length,
+                    itemBuilder: (context, index) {
+                      return ReputationListItem(
+                          reputation: _reputationBloc.allReputation[index]);
+                    },
+                  ),
                 ),
                 emptyWidget: Center(
                   child: Column(

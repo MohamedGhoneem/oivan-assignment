@@ -31,4 +31,53 @@ class UserModel extends UserEntity {
     'location': location,
     'age': age,
   };
+  factory UserModel.fromEntity(UserEntity entity) {
+    return UserModel(
+      userId: entity.userId,
+      displayName: entity.displayName,
+      profileImage: entity.profileImage,
+      location: entity.location,
+      reputation: entity.reputation,
+      isBookmarked: entity.isBookmarked,
+      age: entity.age,
+    );
+  }
+
+  UserEntity toEntity() {
+    return UserEntity(
+      userId: userId,
+      displayName: displayName,
+      profileImage: profileImage,
+      location: location,
+      reputation: reputation,
+      isBookmarked: isBookmarked,
+      age: age,
+    );
+  }
+  @override
+  String toString() {
+    return 'UserModel(userId: $userId, displayName: $displayName, isBookmarked: $isBookmarked)';
+  }
+
+  // Add copy with method
+  @override
+  UserModel copyWith({
+    int? userId,
+    String? displayName,
+    String? profileImage,
+    int? reputation,
+    String? location,
+    int? age,
+    bool? isBookmarked,
+  }) {
+    return UserModel(
+      userId: userId ?? this.userId,
+      displayName: displayName ?? this.displayName,
+      profileImage: profileImage ?? this.profileImage,
+      reputation: reputation ?? this.reputation,
+      location: location ?? this.location,
+      age: age ?? this.age,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
+    );
+  }
 }
